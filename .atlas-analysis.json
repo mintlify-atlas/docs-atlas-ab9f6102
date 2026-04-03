@@ -1,24 +1,11 @@
 {
-  "$schema": "https://mintlify.com/docs.json",
-  "name": "uses.tech",
+  "projectType": "saas",
+  "projectName": "uses.tech",
+  "projectDescription": "A community-curated directory of /uses pages where developers share their hardware, software, tools, and configurations.",
   "theme": "willow",
-  "colors": {
-    "primary": "#7c7c83",
-    "light": "#282e36",
-    "dark": "#e1e1e1"
-  },
-  "favicon": "https://media.brand.dev/c33783ff-c837-4e18-a4fb-fe3ea09e28d7.svg",
-  "navbar": {
-    "primary": {
-      "type": "github",
-      "href": "https://github.com/wesbos/awesome-uses"
-    }
-  },
-  "footer": {
-    "socials": {
-      "github": "https://github.com/wesbos/awesome-uses"
-    }
-  },
+  "primaryColor": "#7c7c83",
+  "lightColor": "#282e36",
+  "darkColor": "#e1e1e1",
   "navigation": {
     "tabs": [
       {
@@ -72,5 +59,23 @@
         ]
       }
     ]
-  }
+  },
+  "keyFeatures": [
+    "Community-curated directory of /uses pages from thousands of developers",
+    "Filter by technology tags (JavaScript, React, Python, etc.)",
+    "Filter by country using flag emoji",
+    "Filter by device (Apple, Windows, Linux, BSD, iPhone, Android)",
+    "Automated PR validation via GitHub Actions",
+    "Auto-generated README from data.js",
+    "Remix-powered full-stack web app deployed on Netlify"
+  ],
+  "publicApiSurface": [
+    "Person data schema (name, description, url, country, twitter, mastodon, bluesky, emoji, computer, phone, tags)",
+    "getPeople(tag?) — returns filtered and shuffled list of contributors",
+    "tags() — returns all technology tags with usage counts",
+    "countries() — returns all countries with contributor counts",
+    "devices() — returns device types with usage counts",
+    "normalizeTag(tag) — normalizes tag strings for consistent matching",
+    "URL pattern: /uses, /using, /setup, /environment (required for contributor URLs)"
+  ]
 }

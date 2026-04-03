@@ -1,0 +1,75 @@
+---
+title: "Tags"
+description: "How tags work in the uses.tech directory, including normalization rules and naming best practices."
+---
+
+Tags let contributors describe their tools and technologies. They power the tag filter on the uses.tech directory, letting visitors browse by technology stack.
+
+## How tags work
+
+Each entry in `src/data.js` can include a `tags` array of free-form strings:
+
+```js
+tags: ['JavaScript', 'TypeScript', 'React', 'VS Code', 'Docker']
+```
+
+There is no fixed list of allowed tags — you can use any string. However, a tag only appears as a **filter option** on the site if at least **3 contributors** have used it. Tags with fewer than 3 contributors are still stored and displayed on individual cards, but they don't show up in the filter sidebar.
+
+## Tag normalization
+
+The site normalizes tags before deduplication and counting. This means spelling variants of the same tag are merged automatically. Normalization is applied by the `normalizeTag` function in [`src/util/stats.ts`](https://github.com/wesbos/awesome-uses/blob/master/src/util/stats.ts).
+
+### Normalization rules
+
+The following substitutions are applied (case-insensitive) before lowercasing:
+
+| Input (examples) | Normalized to |
+|---|---|
+| `frontend`, `Frontend`, `FrontEnd` | `Front End` |
+| `TailwindCSS`, `tailwindcss`, `Tailwindcss` | `Tailwind CSS` |
+| `backend`, `Backend` | `Back End` |
+| `fullstack`, `Fullstack`, `FullStack` | `Full Stack` |
+| `a11y`, `A11Y` | `Accessibility` |
+| `next.js`, `NextJS`, `nextjs`, `Next.JS` | `Next` |
+| `react.js`, `ReactJS`, `reactjs`, `React.JS` | `React` |
+
+After these substitutions, the entire string is lowercased for deduplication. This means `JavaScript` and `javascript` are counted as the same tag — but the display name shown on the site is taken from whichever variant has the higher contributor count.
+
+### Normalization source
+
+```ts
+export function normalizeTag(tag) {
+  return (
+    tag
+      .replace(/frontend/i, 'Front End')
+      .replace(/TailwindCSS/i, 'Tailwind CSS')
+      .replace(/backend/i, 'Back End')
+      .replace(/fullstack/i, 'Full Stack')
+      .replace(/a11y/i, 'Accessibility')
+      .replace(/next.?js/i, 'Next')
+      .replace(/react.?js/i, 'React')
+      .toLowerCase()
+  );
+}
+```
+
+## Popular tags
+
+The following tags have many contributors in the directory and will appear as filter options on the site:
+
+`JavaScript` · `TypeScript` · `React` · `Vue` · `Python` · `Go` · `Rust` · `Node.js` · `Docker` · `Vim` · `VS Code` · `CSS` · `HTML` · `Next` · `Tailwind CSS` · `Swift` · `Figma` · `Linux` · `macOS` · `Obsidian`
+
+## Best practices
+
+<Tip>
+  Use the canonical, well-known spelling of a tool name. The normalizer handles many common variants, but the display name shown on the site comes from whichever variant has the most contributors — so using the standard spelling helps keep the directory consistent.
+</Tip>
+
+- **Use the official casing.** Write `TypeScript`, not `Typescript` or `typescript`. Write `VS Code`, not `vscode` or `VSCode`.
+- **Prefer short, recognizable names.** Use `React` rather than `React.js` or `ReactJS` — the normalizer maps those to the same bucket anyway, but `React` is already the canonical form.
+- **Be specific but not too narrow.** `Photography` is a useful tag. `Nikon D750 Timelapse Photography` is too specific to ever appear as a filter.
+- **Don't duplicate the obvious.** If you've set `computer: 'apple'`, you don't also need a `macOS` tag — users can already filter by device.
+
+<Note>
+  Tags are case-sensitive in the raw data, but are lowercased before deduplication. This means `React` and `react` count as the same tag. Use the standard casing — it's what other contributors expect and what the site displays.
+</Note>

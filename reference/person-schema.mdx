@@ -1,0 +1,188 @@
+---
+title: "Person schema"
+description: "Complete field reference for a contributor entry in src/data.js."
+---
+
+Every entry in `src/data.js` is a JavaScript object that represents one contributor's `/uses` page. The schema is enforced with [Joi](https://joi.dev) and validated automatically on every pull request.
+
+## Required fields
+
+<ParamField path="name" type="string" required>
+  The contributor's display name. Shown as the card heading in the directory.
+
+  ```js
+  name: 'Wes Bos'
+  ```
+</ParamField>
+
+<ParamField path="description" type="string" required>
+  A short tagline or bio. Displayed beneath the name on the directory card. Keep it brief — one or two sentences at most.
+
+  ```js
+  description: 'Full-stack developer, teacher, and course creator.'
+  ```
+</ParamField>
+
+<ParamField path="url" type="string (URI)" required>
+  The full URL of the contributor's `/uses` page. Must be a valid URI **and** must match the URL pattern described below.
+
+  **Valid URL endings:** `/uses`, `/using`, `/setup`, `/environment`
+
+  **Also accepted:** any URL that begins with `https://gist.github.com/`
+
+  <Warning>
+    The URL is validated against the regex `/(use|uses|using|setup|environment|^https:\/\/gist\.github\.com\/)/`. A URL that does not match this pattern will fail validation, even if it is otherwise a valid URI.
+  </Warning>
+
+  ```js
+  // Valid examples
+  url: 'https://example.com/uses'
+  url: 'https://example.com/my-setup'
+  url: 'https://example.com/environment'
+  url: 'https://gist.github.com/username/abc123'
+
+  // Invalid — does not match the pattern
+  url: 'https://example.com/tools'
+  ```
+</ParamField>
+
+<ParamField path="country" type="string (flag emoji)" required>
+  A single country flag emoji representing the contributor's country. Must be one of the supported flag emoji from the [Unicode flag sequence list](https://github.com/wesbos/awesome-uses/blob/master/scripts/flags.js) used by the validator.
+
+  ```js
+  country: '🇺🇸'  // United States
+  country: '🇬🇧'  // United Kingdom
+  country: '🇧🇷'  // Brazil
+  ```
+
+  <Note>
+    Copy the emoji directly from a source that uses proper Unicode flag sequences (two Regional Indicator letters). Plain text flag descriptions or unsupported emoji sequences will fail validation.
+  </Note>
+</ParamField>
+
+## Optional fields
+
+<ParamField path="twitter" type="string">
+  The contributor's Twitter/X handle. Must begin with `@` and contain only alphanumeric characters or underscores, between 1 and 15 characters after the `@`.
+
+  Pattern: `/^@?(\w){1,15}$/`
+
+  ```js
+  twitter: '@wesbos'
+  ```
+</ParamField>
+
+<ParamField path="mastodon" type="string">
+  The contributor's Mastodon handle in full `@handle@server.tld` format.
+
+  Pattern: `/^@(\w){1,30}@(\w)+\.(.?\w)+$/`
+
+  ```js
+  mastodon: '@hello@mastodon.social'
+  ```
+</ParamField>
+
+<ParamField path="bluesky" type="string">
+  The contributor's Bluesky handle. **Do not prefix with `@`.** Use the bare handle format, which includes at least one dot.
+
+  Pattern: `/^[\w-]+\.(?:[\w-]+\.)?[\w-]+$/`
+
+  ```js
+  // Correct — no @ prefix
+  bluesky: 'wesbos.com'
+  bluesky: 'user.bsky.social'
+
+  // Incorrect
+  bluesky: '@user.bsky.social'
+  ```
+</ParamField>
+
+<ParamField path="emoji" type="string">
+  A single emoji that represents the contributor in some way. Purely decorative — shown alongside the card. Can be any emoji or even an empty string.
+
+  ```js
+  emoji: '🔥'
+  emoji: '🦘'
+  ```
+</ParamField>
+
+<ParamField path="computer" type="string (enum)">
+  The contributor's primary computer platform. Must be one of the following exact values:
+
+  | Value | Meaning |
+  |---|---|
+  | `'apple'` | macOS (Apple Silicon or Intel Mac) |
+  | `'windows'` | Windows PC |
+  | `'linux'` | Linux desktop or laptop |
+  | `'bsd'` | BSD-based system |
+
+  ```js
+  computer: 'apple'
+  ```
+</ParamField>
+
+<ParamField path="phone" type="string (enum)">
+  The contributor's primary phone platform. Must be one of the following exact values:
+
+  | Value | Meaning |
+  |---|---|
+  | `'iphone'` | Apple iPhone |
+  | `'android'` | Android device |
+  | `'windowsphone'` | Windows Phone |
+  | `'flipphone'` | Flip/feature phone |
+
+  ```js
+  phone: 'iphone'
+  ```
+</ParamField>
+
+<ParamField path="tags" type="string[]">
+  A list of tools, technologies, or topics that describe the contributor's setup or work. Tags are free-form strings — there is no fixed list. Tags with 3 or more contributors are shown as filters on the site.
+
+  ```js
+  tags: ['JavaScript', 'TypeScript', 'React', 'VS Code', 'Docker']
+  ```
+
+  See the [Tags reference](/reference/tags) for naming conventions and normalization rules.
+</ParamField>
+
+## Complete example
+
+```js
+{
+  name: 'Jane Doe',
+  description: 'Full-stack developer and open-source enthusiast based in Berlin.',
+  url: 'https://janedoe.dev/uses',
+  country: '🇩🇪',
+  twitter: '@janedoe',
+  mastodon: '@jane@fosstodon.org',
+  bluesky: 'janedoe.dev',
+  emoji: '🦊',
+  computer: 'linux',
+  phone: 'android',
+  tags: ['JavaScript', 'TypeScript', 'React', 'Node.js', 'Docker', 'Vim'],
+},
+```
+
+## Schema source
+
+The schema is defined in [`scripts/utils.js`](https://github.com/wesbos/awesome-uses/blob/master/scripts/utils.js) using Joi:
+
+```js
+Joi.object({
+  name: Joi.string().required(),
+  description: Joi.string().required(),
+  url: Joi.string()
+    .uri()
+    .required()
+    .pattern(/(use|uses|using|setup|environment|^https:\/\/gist.github.com\/)/),
+  country: Joi.string().valid(...flags).required(),
+  twitter: Joi.string().pattern(new RegExp(/^@?(\w){1,15}$/)),
+  mastodon: Joi.string().pattern(new RegExp(/^@(\w){1,30}@(\w)+\.(.?\w)+$/)),
+  bluesky: Joi.string().pattern(new RegExp(/^[\w-]+\.(?:[\w-]+\.)?[\w-]+$/)),
+  emoji: Joi.string().allow(''),
+  computer: Joi.string().valid('apple', 'windows', 'linux', 'bsd'),
+  phone: Joi.string().valid('iphone', 'android', 'windowsphone', 'flipphone'),
+  tags: Joi.array().items(Joi.string()),
+})
+```

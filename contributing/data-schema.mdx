@@ -1,0 +1,114 @@
+---
+title: "Data schema"
+description: "Reference for every field in the Person object that makes up an entry in src/data.js."
+---
+
+Every entry in `src/data.js` must conform to the Joi schema defined in [`scripts/utils.js`](https://github.com/wesbos/awesome-uses/blob/master/scripts/utils.js). A GitHub Action validates every PR against this schema automatically.
+
+## Fields
+
+<ParamField path="body.name" type="string" required>
+  Your display name as it will appear in the directory.
+</ParamField>
+
+<ParamField path="body.description" type="string" required>
+  A short tagline describing who you are or what you do. Shown beneath your name in the directory listing.
+</ParamField>
+
+<ParamField path="body.url" type="string" required>
+  The full URL to your `/uses` page. Must be a valid URI and must contain one of `use`, `uses`, `using`, `setup`, or `environment` in the path, or be a `gist.github.com` URL.
+
+  <Warning>
+    Linking to your homepage instead of your `/uses` page will cause validation to fail. The URL pattern is enforced by the schema.
+  </Warning>
+</ParamField>
+
+<ParamField path="body.country" type="string" required>
+  A flag emoji representing your country (e.g. `🇺🇸`, `🇩🇪`, `🇧🇷`). Must be a valid flag emoji from the list of supported values in `scripts/flags.js`.
+</ParamField>
+
+<ParamField path="body.twitter" type="string">
+  Your Twitter/X username. Must match the pattern `@handle` where the handle is 1–15 word characters. The leading `@` is optional but conventional.
+
+  Example: `@wesbos`
+</ParamField>
+
+<ParamField path="body.mastodon" type="string">
+  Your Mastodon username in the format `@handle@server.tld`.
+
+  Example: `@kineticdiplomacy@infosec.exchange`
+</ParamField>
+
+<ParamField path="body.bluesky" type="string">
+  Your Bluesky handle. Do not include the leading `@`. Must match the format `username.bsky.social` or a custom domain handle like `user.example.com`.
+
+  Example: `wesbos.bsky.social`
+</ParamField>
+
+<ParamField path="body.emoji" type="string">
+  Any single emoji to represent you in the directory. Can be left as an empty string.
+
+  Example: `🚀`
+</ParamField>
+
+<ParamField path="body.computer" type="string">
+  The type of computer you primarily use. Accepted values:
+
+  - `apple`
+  - `windows`
+  - `linux`
+  - `bsd`
+</ParamField>
+
+<ParamField path="body.phone" type="string">
+  The type of phone you use. Accepted values:
+
+  - `iphone`
+  - `android`
+  - `windowsphone`
+  - `flipphone`
+</ParamField>
+
+<ParamField path="body.tags" type="string[]">
+  An array of strings describing your tools, technologies, or areas of interest. Used for filtering in the directory. There is no fixed list — use whatever describes you best.
+
+  <Tip>
+    Include a mix of languages, frameworks, editors, and interests. The more relevant tags you add, the easier it is for people to find your page when filtering.
+  </Tip>
+</ParamField>
+
+## Complete example
+
+```js
+{
+  name: 'Loic Leray',
+  description:
+    'Veterinarian turned CRUD-monkey and tech sales guy. Extreme sports enthusiast.',
+  url: 'https://www.loicleray.com/uses',
+  emoji: '🦘',
+  country: '🇦🇺',
+  computer: 'apple',
+  phone: 'iphone',
+  twitter: '@loicleray',
+  tags: [
+    'Remote',
+    'Developer',
+    'Sales',
+    'SEO',
+    'Programmatic SEO',
+    'Python',
+    'Self Taught',
+    'Typescript',
+    'React',
+    'NextJS',
+    'Drones',
+    'Agriculture',
+    'Mining',
+    'UI',
+    'Design',
+    'Photo',
+    'Video',
+    'Youtube',
+  ],
+},
+```

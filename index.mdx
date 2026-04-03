@@ -1,97 +1,62 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "uses.tech — Developer /uses Pages Directory"
+description: "Discover how thousands of developers set up their hardware, software, tools, and configurations. Browse the community-curated /uses page directory."
 ---
 
-## Setting up
+# Welcome to uses.tech
 
-Get your documentation site up and running in minutes.
+uses.tech is a community-curated directory of `/uses` pages — a place where developers share the exact hardware, software, editors, tools, and configurations that power their work.
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
+Browse thousands of developer setups, filter by technology stack, country, or device, and get inspired to build your own `/uses` page.
 
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={2}>
+  <Card title="What is a /uses page?" icon="circle-question" href="/what-is-a-uses-page">
+    Learn what a /uses page is and why developers create them.
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="Add your /uses page" icon="plus" href="/contributing/overview">
+    Submit your own /uses page to the directory via a pull request.
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="Browse by tag" icon="tag" href="/browsing/filtering-by-tag">
+    Find developers using specific tools like React, Vim, or Docker.
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="Data schema reference" icon="database" href="/reference/person-schema">
+    Understand the full data schema used for each contributor entry.
   </Card>
-</Columns>
+</CardGroup>
 
-## Create beautiful pages
+## How it works
 
-Everything you need to create world-class documentation.
+uses.tech is an open-source project on GitHub. The entire directory lives in a single `data.js` file. Anyone can add their `/uses` page by submitting a pull request.
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+<Steps>
+  <Step title="Create your /uses page">
+    Build a page on your personal website at a URL ending in `/uses`, `/using`, `/setup`, or `/environment`.
+  </Step>
+  <Step title="Fork the repository">
+    Fork [wesbos/awesome-uses](https://github.com/wesbos/awesome-uses) on GitHub and add your entry to `src/data.js`.
+  </Step>
+  <Step title="Submit a pull request">
+    Open a PR with your name as the title. Automated validation checks your entry before it's merged.
+  </Step>
+  <Step title="Join the directory">
+    Once merged, your page appears in the live directory at [uses.tech](https://uses.tech) — browsable by tag, country, and device.
+  </Step>
+</Steps>
 
-## Need inspiration?
+## Explore the directory
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+<CardGroup cols={3}>
+  <Card title="Filter by technology" icon="code" href="/browsing/filtering-by-tag">
+    Browse by JavaScript, Python, Vim, Docker, and hundreds more tags.
+  </Card>
+  <Card title="Filter by country" icon="globe" href="/browsing/filtering-by-country">
+    Discover developers from around the world using flag emoji filters.
+  </Card>
+  <Card title="Filter by device" icon="laptop" href="/browsing/filtering-by-device">
+    Find Apple, Windows, Linux, BSD, iPhone, and Android users.
+  </Card>
+</CardGroup>
+
+<Note>
+  uses.tech is built and maintained by [Wes Bos](https://wesbos.com) and the open-source community. All contributions are welcome — see the [contribution guide](/contributing/overview) to get started.
+</Note>

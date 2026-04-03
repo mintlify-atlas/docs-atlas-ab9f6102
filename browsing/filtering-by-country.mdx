@@ -1,0 +1,59 @@
+---
+title: "Filtering by country"
+description: "Browse contributors by their country using flag emoji filters in the Topics bar."
+---
+
+Country filters appear alongside tag filters in the Topics bar at the top of the directory. Each country is represented by its flag emoji — clicking one narrows the directory to contributors from that country.
+
+## How country data is stored
+
+Every contributor entry has a required `country` field that holds a flag emoji string, for example:
+
+| Emoji | Country |
+|---|---|
+| 🇺🇸 | United States |
+| 🇬🇧 | United Kingdom |
+| 🇩🇪 | Germany |
+| 🇨🇦 | Canada |
+| 🇦🇺 | Australia |
+| 🇧🇷 | Brazil |
+| 🇮🇳 | India |
+| 🇫🇷 | France |
+| 🇳🇱 | Netherlands |
+
+The `country` field is **required** — every entry in the directory must include a valid country flag emoji. The site uses the `country-emoji` package to resolve the human-readable country name from the emoji for display in the `title` attribute of each filter button.
+
+## Browsing by country
+
+Countries are sorted by contributor count — the most represented countries appear first in the filter bar. Each flag button shows a count badge indicating how many contributors are from that country.
+
+Clicking a flag emoji filters the directory to show only contributors from that country. The URL updates to reflect the selection:
+
+```
+https://uses.tech/like/🇺🇸
+https://uses.tech/like/🇬🇧
+https://uses.tech/like/🇩🇪
+```
+
+The flag emoji is used directly in the URL path.
+
+<Info>
+  Hovering over a flag in the filter bar shows the full country name as a tooltip, resolved from the emoji using the `country-emoji` library.
+</Info>
+
+## Diversity of contributors
+
+Contributors come from dozens of countries worldwide. The directory is a genuinely international community — while English-speaking countries tend to have higher contributor counts, you'll find `/uses` pages from contributors across Europe, Asia, South America, Africa, and beyond.
+
+<Note>
+  The directory order is randomized on each page load, so filtering by country will surface different contributors at the top each time you visit.
+</Note>
+
+<CardGroup cols={2}>
+  <Card title="Filtering by tag" href="/browsing/filtering-by-tag">
+    Filter contributors by the tools and technologies they use.
+  </Card>
+  <Card title="Filtering by device" href="/browsing/filtering-by-device">
+    Filter the directory by computer or phone platform.
+  </Card>
+</CardGroup>

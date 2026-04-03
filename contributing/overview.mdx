@@ -1,0 +1,46 @@
+---
+title: "Contributing overview"
+description: "Learn how to add yourself to the uses.tech directory by forking the repo, editing a single file, and opening a pull request."
+---
+
+uses.tech is a community-maintained directory. Anyone with a `/uses` page can contribute by adding their entry directly to `src/data.js` in the [wesbos/awesome-uses](https://github.com/wesbos/awesome-uses) repository.
+
+Every entry is validated automatically when you open a pull request. A GitHub Action checks your data against the Joi schema and verifies that your URL is reachable before a maintainer reviews your PR.
+
+<Note>
+  Read the [PR guidelines](/contributing/pr-guidelines) before submitting. Incorrectly titled PRs are the most common reason for delays.
+</Note>
+
+## How it works
+
+<Steps>
+  <Step title="Fork the repository">
+    Fork [wesbos/awesome-uses](https://github.com/wesbos/awesome-uses) on GitHub to create your own copy of the project.
+  </Step>
+  <Step title="Add your entry to src/data.js">
+    Open `src/data.js` and insert your entry object somewhere in the middle of the array — not at the end. Follow the exact format of existing entries and make sure your URL points to a `/uses` page.
+  </Step>
+  <Step title="Open a pull request">
+    Push your branch and open a PR against the `master` branch. Use the correct title format: `Add Your Name` or `Add @yourhandle`.
+  </Step>
+  <Step title="Wait for automated validation">
+    A GitHub Action runs automatically to validate your entry against the schema and check that your URL responds. If anything fails, the action leaves a comment explaining the issue.
+  </Step>
+</Steps>
+
+## Explore the contributing guides
+
+<CardGroup cols={2}>
+  <Card title="Adding yourself" icon="user-plus" href="/contributing/adding-yourself">
+    Step-by-step instructions for adding your entry to the directory.
+  </Card>
+  <Card title="Data schema" icon="database" href="/contributing/data-schema">
+    Full reference for every field in the Person object.
+  </Card>
+  <Card title="PR guidelines" icon="code-pull-request" href="/contributing/pr-guidelines">
+    Required title formats, branch rules, and code style expectations.
+  </Card>
+  <Card title="What is a uses page?" icon="circle-question" href="/what-is-a-uses-page">
+    Not sure what belongs on a /uses page? Start here.
+  </Card>
+</CardGroup>

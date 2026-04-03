@@ -1,0 +1,201 @@
+---
+title: "Validation rules"
+description: "All automated checks that run on pull requests to uses.tech."
+---
+
+Every pull request to uses.tech runs an automated GitHub Action that validates all new or modified entries in `src/data.js`. You don't need to run validation locally — it runs automatically when you open or update a PR.
+
+<Note>
+  If validation fails, the GitHub Action posts a comment on your PR listing the specific errors. Fix the issues and push a new commit to re-trigger validation.
+</Note>
+
+## Validation categories
+
+<Accordion title="Schema validation (Joi)">
+
+All fields are validated against a [Joi](https://joi.dev) schema defined in [`scripts/utils.js`](https://github.com/wesbos/awesome-uses/blob/master/scripts/utils.js).
+
+**Required fields — validation fails if any are missing or the wrong type:**
+
+- `name` — must be a non-empty string
+- `description` — must be a non-empty string
+- `url` — must be a valid URI string that also matches the URL pattern (see below)
+- `country` — must be a string and must be one of the supported flag emoji values
+
+**Optional fields — validated only when present:**
+
+- `twitter` — must match `/^@?(\w){1,15}$/`
+- `mastodon` — must match `/^@(\w){1,30}@(\w)+\.(.?\w)+$/`
+- `bluesky` — must match `/^[\w-]+\.(?:[\w-]+\.)?[\w-]+$/`
+- `emoji` — any string, including empty string
+- `computer` — must be one of: `'apple'`, `'windows'`, `'linux'`, `'bsd'`
+- `phone` — must be one of: `'iphone'`, `'android'`, `'windowsphone'`, `'flipphone'`
+- `tags` — must be an array of strings
+
+</Accordion>
+
+<Accordion title="URL pattern validation">
+
+The `url` field must satisfy two conditions:
+
+1. It must be a valid URI (checked by Joi's `.uri()` rule).
+2. It must match the regex pattern:
+
+```
+/(use|uses|using|setup|environment|^https:\/\/gist\.github\.com\/)/
+```
+
+This means the URL must either:
+- Contain the words `use`, `uses`, `using`, `setup`, or `environment` anywhere in the path, **or**
+- Start with `https://gist.github.com/`
+
+**Valid examples:**
+
+```
+https://example.com/uses          ✅ contains "uses"
+https://example.com/using         ✅ contains "using"
+https://example.com/my-setup      ✅ contains "setup"
+https://example.com/environment   ✅ contains "environment"
+https://gist.github.com/user/abc  ✅ gist URL
+```
+
+**Invalid examples:**
+
+```
+https://example.com/tools         ❌ no matching keyword
+https://example.com/gear          ❌ no matching keyword
+```
+
+</Accordion>
+
+<Accordion title="URL reachability check">
+
+In addition to pattern matching, an HTTP request is made to the provided `url` to verify it is reachable. The request times out after **10 seconds**.
+
+If the URL returns an error or does not respond in time, validation fails and the PR comment will include a message in the form:
+
+```
+- URL is invalid: https://example.com/uses
+```
+
+Make sure your `/uses` page is publicly accessible before submitting a PR. Temporary downtime or slow DNS propagation can cause this check to fail — in those cases, re-run the CI check or push an empty commit to trigger it again.
+
+</Accordion>
+
+<Accordion title="Country flag validation">
+
+The `country` field must be one of the flag emoji sequences in the [supported flags list](https://github.com/wesbos/awesome-uses/blob/master/scripts/flags.js). This list covers all countries recognized by the Unicode Consortium's Regional Indicator sequences.
+
+If you provide a string that is not in this list — for example, a plain text country name or an unsupported emoji — validation will fail with a message like:
+
+```
+- "country" must be one of [🇦🇫, 🇦🇱, 🇩🇿, ...]
+```
+
+Copy your flag emoji from the data.js file of an existing entry or from a Unicode-aware emoji picker.
+
+</Accordion>
+
+<Accordion title="Twitter handle validation">
+
+If `twitter` is provided, it must match:
+
+```
+/^@?(\w){1,15}$/
+```
+
+- The `@` prefix is optional in the regex, but the convention in the data is to include it.
+- The handle (after `@`) must be 1–15 word characters (`[a-zA-Z0-9_]`).
+
+**Valid:**
+
+```js
+twitter: '@wesbos'       ✅
+twitter: '@jane_doe_99'  ✅
+```
+
+**Invalid:**
+
+```js
+twitter: '@this_handle_is_way_too_long'  ❌  exceeds 15 chars
+twitter: '@jane doe'                     ❌  contains a space
+```
+
+</Accordion>
+
+<Accordion title="Mastodon handle validation">
+
+If `mastodon` is provided, it must match:
+
+```
+/^@(\w){1,30}@(\w)+\.(.?\w)+$/
+```
+
+The handle must be in full `@user@server.tld` format.
+
+**Valid:**
+
+```js
+mastodon: '@hello@mastodon.social'         ✅
+mastodon: '@kineticdiplomacy@infosec.exchange'  ✅
+```
+
+**Invalid:**
+
+```js
+mastodon: '@hello'                  ❌  missing server
+mastodon: 'hello@mastodon.social'   ❌  missing leading @
+```
+
+</Accordion>
+
+<Accordion title="Bluesky handle validation">
+
+If `bluesky` is provided, it must match:
+
+```
+/^[\w-]+\.(?:[\w-]+\.)?[\w-]+$/
+```
+
+- **Do not include a leading `@`** — the pattern does not allow it.
+- The handle must contain at least one dot (e.g. `user.bsky.social` or `username.com`).
+
+**Valid:**
+
+```js
+bluesky: 'wesbos.com'          ✅
+bluesky: 'user.bsky.social'    ✅
+```
+
+**Invalid:**
+
+```js
+bluesky: '@user.bsky.social'   ❌  @ prefix not allowed
+bluesky: 'username'            ❌  no dot / not a valid handle format
+```
+
+</Accordion>
+
+## What happens when validation fails
+
+When one or more checks fail, the GitHub Action:
+
+1. **Marks the CI check as failed** — the PR cannot be merged until it is fixed.
+2. **Posts a comment** on the PR with a list of specific error messages, for example:
+
+```
+🚨 We have detected the following issues, let us (contributors) know if you need support or clarifications:
+- "url" with value "https://example.com/tools" fails to match the required pattern
+- URL is invalid: https://example.com/tools
+```
+
+Fix each reported issue, push a new commit, and the validation will run again automatically.
+
+## What happens when validation passes
+
+When all checks pass, the action posts a confirmation comment listing the contributor name and URL that were validated — making it easy for maintainers to do a quick manual review before merging:
+
+```
+✅ Automatic validation checks succeeded for:
+- Jane Doe, https://janedoe.dev/uses
+```

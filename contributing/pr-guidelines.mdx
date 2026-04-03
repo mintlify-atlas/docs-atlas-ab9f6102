@@ -1,0 +1,56 @@
+---
+title: "PR guidelines"
+description: "Requirements for pull request titles, branch state, code style, and automated validation."
+---
+
+Follow these guidelines before opening a pull request. Most PRs that stall do so because of an incorrect title or a branch that is out of date with `master`.
+
+## PR title format
+
+Your PR title must identify the person being added. Use your name or social handle.
+
+<Check>
+  **Add Your Name** — full name, correctly capitalised
+</Check>
+
+<Check>
+  **Add @twitterusername** — Twitter/X handle with leading `@`
+</Check>
+
+<Check>
+  **Add @mastodonusername@instance.url** — full Mastodon address
+</Check>
+
+<Warning>
+  **Add myself** — does not identify who is being added
+</Warning>
+
+<Warning>
+  **Adding myself!** — wrong verb form and punctuation
+</Warning>
+
+<Warning>
+  **Add Your Name @twitter @github** — multiple handles in the title are not allowed
+</Warning>
+
+## Branch requirements
+
+Your branch must be up to date with the `master` branch of `wesbos/awesome-uses` before your PR can merge. If `master` has moved ahead since you forked, rebase or merge `master` into your branch before opening the PR.
+
+## Code style
+
+- Format your entry the same way as existing entries in `src/data.js`: one property per line, trailing commas, consistent indentation.
+- Keep variable, method, function, and component names clear and concise if you are making any code changes beyond adding your entry.
+
+## Automated validation
+
+Every PR triggers a GitHub Action that:
+
+1. Validates your entry against the [Joi schema](/contributing/data-schema).
+2. Checks that your `url` returns a successful HTTP response.
+
+If either check fails, the action leaves a comment on your PR listing the exact issues. Fix the problems and push an update to your branch — the action will re-run automatically.
+
+<Note>
+  You do not need to do anything to trigger validation. It runs automatically on every push to an open PR.
+</Note>

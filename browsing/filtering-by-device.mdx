@@ -1,0 +1,67 @@
+---
+title: "Filtering by device"
+description: "Filter contributors by the computer or phone platform they use."
+---
+
+Device filters appear at the end of the Topics bar, after tag and country filters. Instead of text labels, each device is represented by a small icon image. Clicking a device icon narrows the directory to contributors who use that platform.
+
+## Device types
+
+Contributors can optionally specify two device fields: `computer` and `phone`. The accepted values for each are fixed:
+
+<AccordionGroup>
+  <Accordion title="Computers">
+    | Value | Platform |
+    |---|---|
+    | `apple` | macOS (Mac) |
+    | `windows` | Windows PC |
+    | `linux` | Linux |
+    | `bsd` | BSD |
+  </Accordion>
+  <Accordion title="Phones">
+    | Value | Platform |
+    |---|---|
+    | `iphone` | iPhone (iOS) |
+    | `android` | Android |
+    | `windowsphone` | Windows Phone |
+    | `flipphone` | Flip phone |
+  </Accordion>
+</AccordionGroup>
+
+Both `computer` and `phone` are **optional** fields. Not every contributor specifies their devices, so device filters will only match contributors who have explicitly listed that platform.
+
+## How device filters work
+
+The site collects all `computer` and `phone` values across every contributor entry, counts how many people use each platform, and sorts the device icons by popularity. The icon for each device comes from a corresponding image asset (`apple.svg`, `windows.svg`, `linux.png`, `iphone.png`, etc.).
+
+Clicking a device icon filters the directory and updates the URL:
+
+```
+https://uses.tech/like/apple
+https://uses.tech/like/linux
+https://uses.tech/like/iphone
+https://uses.tech/like/android
+```
+
+The value in the URL matches the raw field value from the contributor data exactly.
+
+<Note>
+  Because device fields are optional, the contributor count shown on a device icon will be lower than the total directory size. A contributor with no `computer` or `phone` field set will not appear under any device filter.
+</Note>
+
+## Device counts
+
+Each device icon displays a count badge, just like tag and country filters. The count reflects how many contributors have that exact value in either their `computer` or `phone` field. The icons are sorted from most to least popular.
+
+<Tip>
+  The most common computer platform is `apple` by a significant margin, followed by `linux` and `windows`. For phones, `iphone` and `android` account for the vast majority of entries.
+</Tip>
+
+<CardGroup cols={2}>
+  <Card title="Filtering by tag" href="/browsing/filtering-by-tag">
+    Filter contributors by the tools and technologies they use.
+  </Card>
+  <Card title="Filtering by country" href="/browsing/filtering-by-country">
+    Browse contributors by their country using flag emoji filters.
+  </Card>
+</CardGroup>

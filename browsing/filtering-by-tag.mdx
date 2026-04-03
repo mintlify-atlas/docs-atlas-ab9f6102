@@ -1,0 +1,68 @@
+---
+title: "Filtering by technology tag"
+description: "Use tag filters to browse contributors by the tools and technologies they use."
+---
+
+The homepage displays a bar of clickable filter tags above the contributor directory. Each tag represents a technology, tool, or topic that contributors have listed on their `/uses` pages.
+
+## How tags work
+
+Every contributor entry includes a `tags` array — a list of strings describing what they use. When the site loads, all tags across every contributor are collected and counted. **Only tags used by 3 or more contributors are shown** in the filter bar. Tags used by fewer people are omitted to keep the list manageable.
+
+Tags are also deduplicated and normalized before display. Variations like `"Javascript"` and `"JavaScript"` are merged into a single entry, and common shorthand forms are expanded:
+
+| Raw tag in data | Displayed as |
+|---|---|
+| `frontend` | `Front End` |
+| `backend` | `Back End` |
+| `fullstack` | `Full Stack` |
+| `TailwindCSS` | `Tailwind CSS` |
+| `a11y` | `Accessibility` |
+| `Next.js` / `NextJS` | `Next` |
+| `React.js` / `ReactJS` | `React` |
+
+<Tip>
+  Tags are case-insensitive and normalized — `"frontend"` and `"Front End"` are treated as the same tag and their counts are combined.
+</Tip>
+
+## Browsing by tag
+
+Click any tag in the filter bar to show only contributors who use that technology. Each tag displays a count next to it showing how many contributors match.
+
+The URL updates to reflect the active filter:
+
+```
+https://uses.tech/like/React
+https://uses.tech/like/TypeScript
+https://uses.tech/like/Docker
+```
+
+The tag value in the URL is the normalized display name, percent-encoded where necessary.
+
+## Popular tags
+
+Some of the most common tags found across contributors include:
+
+- JavaScript, TypeScript
+- React, Vue, Next
+- Python, Go, Ruby
+- CSS, Tailwind CSS, HTML
+- Docker, Linux, Vim
+- Figma, Photoshop
+
+## Returning to the full directory
+
+Click the **all** button — the first item in the filter bar — to clear the active tag and return to the full list of contributors. It always shows the total number of people in the directory.
+
+<Note>
+  The directory order is randomized on each page load, so the same tag filter will surface different contributors at the top each time you visit.
+</Note>
+
+<CardGroup cols={2}>
+  <Card title="Filtering by country" href="/browsing/filtering-by-country">
+    Browse contributors by their country using flag emoji filters.
+  </Card>
+  <Card title="Filtering by device" href="/browsing/filtering-by-device">
+    Filter the directory by computer or phone platform.
+  </Card>
+</CardGroup>

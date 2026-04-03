@@ -1,0 +1,156 @@
+---
+title: "GitHub Actions"
+description: "Automated workflows that validate pull requests and keep the repository in sync."
+---
+
+The repository contains two GitHub Actions workflows in `.github/workflows/`. Both run automatically — contributors do not need to trigger them manually.
+
+## Workflows
+
+### `data-validate.yml` — Validate data.js
+
+**Trigger:** `pull_request` events that touch `src/data.js`
+
+This workflow runs every time a pull request modifies the data file. It validates the new or changed entries against the Joi schema and checks that each submitted URL is reachable.
+
+```yaml .github/workflows/data-validate.yml
+name: Validate data.js
+
+on:
+  pull_request:
+    paths: src/data.js
+
+env:
+  CI: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 18.x
+    - name: Cache/Restore node modules
+      uses: actions/cache@v4
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+    - name: Install Dependencies
+      run: npm install
+    - name: Validate data.js
+      run: node ./scripts/data-validate.js
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+The entry point is `scripts/data-validate.js`, which:
+
+1. Calls `getMasterData()` to fetch the `src/data.js` from the `master` branch
+2. Filters the PR's data down to only the entries that are **new** (not already in master)
+3. Validates each new entry against the Joi `Schema`
+4. Makes an HTTP request to each new entry's URL to confirm it is reachable
+5. Calls `communicateValidationOutcome()` to report the result
+
+---
+
+### `populate-readme.yml` — Populate readme.md from master and lint src/data.js
+
+**Trigger:** `push` to `master` branch that touches `src/data.js` or `scripts/readme-template.md`
+
+After a PR is merged into `master`, this workflow lints `src/data.js`, regenerates `readme.md` from the updated data, and pushes the result back to `master`.
+
+```yaml .github/workflows/populate-readme.yml
+name: Populate readme.md from master and lint src/data.js
+
+on:
+  push:
+    branches: master
+    paths:
+    - src/data.js
+    - scripts/readme-template.md
+
+env:
+  CI: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 18.x
+    - name: Cache/Restore node modules
+      uses: actions/cache@v4
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+    - name: Install Dependencies
+      run: npm install
+    - name: Lint src/data.js
+      run: |
+        npx eslint --fix src/data.js
+        git add src/data.js
+    - name: Populate readme.md from master
+      run: |
+        node ./scripts/populate-readme.js
+        mv generated-readme.md readme.md
+        git add readme.md
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        if [ ! -z "$(git status --porcelain)" ]; then
+          git commit -m "chore: generate \`readme.md\`, lint \`src/data.js\`"
+        fi
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+The commit message is `chore: generate \`readme.md\`, lint \`src/data.js\`` and is authored by the `GitHub Action` bot user.
+
+## Validation utilities (`scripts/utils.js`)
+
+Both workflows share a set of helper functions exported from `scripts/utils.js`.
+
+### `getMasterData()`
+
+Fetches `src/data.js` from the `master` branch and returns it as an array.
+
+When the workflow runs on a PR branch (i.e., not `master`), the function temporarily swaps out the branch's `src/data.js` for the version from `master`, loads it, and then restores the original. This lets `data-validate.js` isolate only the entries that are new in the PR.
+
+### `Schema`
+
+A [Joi](https://joi.dev) object schema that every entry in `src/data.js` must satisfy:
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| `name` | string | Yes | Display name of the person |
+| `description` | string | Yes | Short bio shown in the directory |
+| `url` | string (URI) | Yes | Must contain `use`, `uses`, `using`, `setup`, `environment`, or be a GitHub Gist URL |
+| `country` | string | Yes | Must be a valid country code from the supported flags list |
+| `twitter` | string | No | Twitter/X handle — max 15 characters |
+| `mastodon` | string | No | Must match `@user@instance.tld` format |
+| `bluesky` | string | No | Must be a valid Bluesky handle |
+| `emoji` | string | No | Optional emoji; empty string allowed |
+| `computer` | string | No | One of `apple`, `windows`, `linux`, `bsd` |
+| `phone` | string | No | One of `iphone`, `android`, `windowsphone`, `flipphone` |
+| `tags` | array of strings | No | Category tags for filtering |
+
+### `getStatusCode(url)`
+
+Makes an HTTP GET request to the submitted URL and returns the HTTP status code. The request times out after **10 seconds**.
+
+If the status code is outside the `200–399` range, or if the request throws an error, the URL is added to the list of failures.
+
+### `communicateValidationOutcome(errors, failedUrls, changedData)`
+
+Collects validation errors and failed URLs, then logs the result:
+
+- **On failure** — calls `core.setFailed()` to fail the Actions job and logs each issue
+- **On success** — logs a confirmation message listing each validated entry with its name and URL
+
+<Note>
+  PR commenting is currently disabled in the source code. The outcome is visible in the Actions run logs rather than as a comment on the pull request.
+</Note>

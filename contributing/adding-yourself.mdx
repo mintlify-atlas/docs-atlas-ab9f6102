@@ -1,0 +1,71 @@
+---
+title: "Adding yourself to the directory"
+description: "A step-by-step guide to forking the repo, adding your entry to src/data.js, and opening a pull request."
+---
+
+<Steps>
+  <Step title="Fork wesbos/awesome-uses on GitHub">
+    Go to [github.com/wesbos/awesome-uses](https://github.com/wesbos/awesome-uses) and click **Fork**. This creates a copy of the repository under your GitHub account where you can make changes.
+  </Step>
+
+  <Step title="Add your entry to src/data.js">
+    Open `src/data.js` in your forked repository. The file exports a plain JavaScript array of person objects. Add your entry anywhere in the middle of the array — the exact position doesn't matter as long as it's not at the very end.
+
+    Here is the format to follow, taken from a real entry in the file:
+
+    ```js
+    {
+      name: 'Phuc Bui',
+      description:
+        'Creative Frontend Engineer. I create things for designers and developers, usually open source.',
+      url: 'https://phucbm.com/uses',
+      emoji: '👽',
+      country: '🇻🇳',
+      computer: 'apple',
+      phone: 'iphone',
+      twitter: '@phucbm_',
+      tags: [
+        'Fullstack',
+        'Frontend',
+        'Web Animation',
+        'GSAP',
+        'Typescript',
+        'React',
+        'NextJS',
+        'UI',
+        'Freelance',
+        'CSS',
+        'JavaScript',
+      ],
+    },
+    ```
+
+    Replace each field with your own information. Only `name`, `description`, `url`, and `country` are required. All other fields are optional.
+  </Step>
+
+  <Step title="Don't add yourself to the end of the array">
+    Insert your entry somewhere random in the middle of `src/data.js`, not at the bottom. This keeps the directory from becoming ordered by submission date.
+  </Step>
+
+  <Step title="Make sure your URL links to a /uses page">
+    Your `url` must point to a page that describes your setup — not just your homepage. The validation schema enforces this: the URL must contain one of `use`, `uses`, `using`, `setup`, or `environment`, or it must be a GitHub Gist URL.
+
+    <Warning>
+      URLs that don't match the required pattern will fail automated validation and block your PR from merging. Double-check your link before submitting.
+    </Warning>
+
+    Valid examples:
+    - `https://example.com/uses`
+    - `https://example.com/my-setup`
+    - `https://example.com/using`
+    - `https://gist.github.com/username/abc123`
+  </Step>
+
+  <Step title="Open a PR with the correct title format">
+    Push your branch to your fork and open a pull request against the `master` branch of `wesbos/awesome-uses`. Make sure the PR title follows the required format — see [PR guidelines](/contributing/pr-guidelines) for valid and invalid examples.
+
+    <Tip>
+      Include diverse tags in your entry to help people find your page when they filter the directory by technology or interest.
+    </Tip>
+  </Step>
+</Steps>

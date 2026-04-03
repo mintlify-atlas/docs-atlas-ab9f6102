@@ -1,0 +1,86 @@
+---
+title: "Available scripts"
+description: "npm scripts defined in package.json for developing, building, and maintaining the project."
+---
+
+The `package.json` defines three scripts. Run them with `npm run <script>` from the project root.
+
+## Scripts
+
+### `dev`
+
+```bash
+npm run dev
+```
+
+Runs `NODE_ENV=development netlify dev`.
+
+Starts the local development server. `netlify dev` reads `netlify.toml`, launches `remix watch` on port `3000`, and proxies requests through the Netlify edge runtime. See [Local development setup](/development/local-setup) for full setup instructions.
+
+---
+
+### `build`
+
+```bash
+npm run build
+```
+
+Runs `netlify build`.
+
+Builds the Remix app for production using the Netlify build system. The output is written to the `public/` directory as configured in `netlify.toml`:
+
+```toml netlify.toml
+[build]
+  command = "remix build"
+  publish = "public"
+```
+
+This is the same command Netlify runs automatically when you push to the `master` branch.
+
+---
+
+### `readme`
+
+```bash
+npm run readme
+```
+
+Runs `node ./scripts/populate-readme.js`.
+
+Regenerates `readme.md` from `src/data.js` using the template at `scripts/readme-template.md`. The script maps each entry in `data.js` to a Markdown list item and writes the result to `generated-readme.md`. The GitHub Action then renames that file to `readme.md` and commits it.
+
+```js scripts/populate-readme.js
+const fs = require('fs');
+const data = require('../src/data.js');
+
+const readmeTemplate = fs.readFileSync('./scripts/readme-template.md', 'utf8');
+const formatedData = data
+  .map(page => `* [${page.name}](${page.url}) — ${page.description}`)
+  .join('\r\n');
+
+fs.writeFileSync(
+  'generated-readme.md',
+  readmeTemplate.replace('###DATA_PLACEHOLDER###', formatedData)
+);
+```
+
+<Warning>
+  Do not edit `readme.md` manually. It is auto-generated from `src/data.js`. Any hand-written changes will be overwritten the next time this script runs. Edit `src/data.js` or `scripts/readme-template.md` instead.
+</Warning>
+
+In normal development you will not need to run this script yourself — the [`populate-readme` GitHub Actions workflow](/development/github-actions) runs it automatically on every push to `master` that touches `src/data.js` or `scripts/readme-template.md`.
+
+## Lint-staged
+
+The `lint-staged` configuration in `package.json` runs automatically before each git commit via [Husky](https://typicode.github.io/husky/):
+
+```json package.json
+"lint-staged": {
+  "src/data.js": [
+    "eslint --fix",
+    "git add"
+  ]
+}
+```
+
+Whenever `src/data.js` is staged for a commit, ESLint runs with `--fix` on the file and re-stages the result. This ensures consistent formatting in the data file without requiring you to run the linter manually.

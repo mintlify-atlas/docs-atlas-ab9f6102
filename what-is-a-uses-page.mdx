@@ -1,0 +1,92 @@
+---
+title: 'What is a /uses page?'
+description: 'A /uses page is a personal page where a developer documents their hardware, software, editors, configurations, and tools. Learn what to include and why developers create them.'
+keywords: ['uses page', 'developer setup', 'gear', 'software', 'configuration', 'tools']
+---
+
+# What is a /uses page?
+
+A `/uses` page is a dedicated page on a developer's personal website — typically at `yourdomain.com/uses` — where they document their complete setup: the hardware they work on, the software they reach for every day, the configuration details that make their environment feel like home, and the tools and frameworks that define their stack.
+
+The concept spread organically through the developer community as a practical way to answer the perennial question: "What do you use?"
+
+## What a /uses page contains
+
+A well-written `/uses` page typically covers four areas:
+
+**Hardware**
+The physical gear: laptop or desktop (and which chip/processor), monitors, keyboards, mice, audio equipment, standing desks, and other peripherals.
+
+**Software**
+Code editors and IDEs, terminals, browsers, and the apps that run in the background — note-taking tools, window managers, password managers, communication apps.
+
+**Configuration**
+The settings that make software feel personal: editor themes and fonts, shell configuration, dotfiles, keybindings, and plugin lists.
+
+**Tools and frameworks**
+Languages, libraries, frameworks, build tools, cloud platforms, databases, and DevOps tooling. This is where the tags on uses.tech come from — entries on the site are tagged with things like `JavaScript`, `TypeScript`, `React`, `Next.js`, `Vim`, `Docker`, `TailwindCSS`, `Swift`, `Rust`, `Python`, and hundreds more.
+
+## A real example
+
+Here is Wes Bos's entry in `data.js` — the creator of uses.tech:
+
+```js
+{
+  name: 'Wes Bos',
+  description: 'Maker of this site. Web Developer, Tutorial Maker, Syntax.fm Podcaster, BBQ Lover',
+  url: 'https://wesbos.com/uses',
+  twitter: '@wesbos',
+  emoji: '🔥',
+  country: '🇨🇦',
+  computer: 'apple',
+  phone: 'iphone',
+  tags: [
+    'Developer',
+    'Full Stack',
+    'Entrepreneur',
+    'Teacher',
+    'YouTuber',
+    'JavaScript',
+    'React',
+    'Node.js',
+    'CSS',
+  ],
+}
+```
+
+His page at [wesbos.com/uses](https://wesbos.com/uses) expands on each of those tags with specific gear, version numbers, themes, fonts, and the reasoning behind each choice — which is exactly what makes a `/uses` page worth reading.
+
+## Why developers create /uses pages
+
+- **Sharing knowledge** — a single page answers the "what do you use?" question for everyone at once, without repeating yourself in DMs or comment threads.
+- **Inspiring others** — discovering a tool or configuration from someone whose work you respect is one of the best ways to level up your own setup.
+- **Building community** — the uses.tech directory turns individual pages into a collective resource: you can find everyone using a specific editor, language, or framework and compare approaches.
+- **Personal documentation** — a `/uses` page doubles as a reference for yourself, especially when setting up a new machine.
+
+## URL requirement
+
+To be listed on uses.tech, your page URL must end in one of the following:
+
+| Suffix | Example |
+|--------|---------|
+| `/uses` | `yourdomain.com/uses` |
+| `/using` | `yourdomain.com/using` |
+| `/setup` | `yourdomain.com/setup` |
+| `/environment` | `yourdomain.com/environment` |
+
+This is enforced by automated validation when you submit a pull request. A link to your homepage or a blog post won't be accepted — the URL must point to a dedicated `/uses`-style page.
+
+<Tip>
+  The best /uses pages are specific — include version numbers, config details, and why you chose each tool. "I use VS Code" is a starting point; "I use VS Code with the Cobalt2 theme, Operator Mono font, and Vim keybindings because..." is what people actually learn from.
+</Tip>
+
+## Ready to add yours?
+
+<CardGroup cols={2}>
+  <Card title="Adding yourself" icon="user-plus" href="/contributing/adding-yourself">
+    Step-by-step instructions for submitting your /uses page to the directory.
+  </Card>
+  <Card title="Data schema" icon="database" href="/contributing/data-schema">
+    Every field you can include in your entry: name, tags, country, computer, phone, and more.
+  </Card>
+</CardGroup>

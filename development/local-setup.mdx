@@ -1,0 +1,101 @@
+---
+title: "Local development setup"
+description: "Run the uses.tech site locally for development and testing."
+---
+
+## Prerequisites
+
+Before you begin, make sure you have the following installed:
+
+- **Node.js** `>= 18` — required by the `engines` field in `package.json`
+- **pnpm** — the project uses `pnpm-lock.yaml` for dependency management
+- **Netlify CLI** — bundled as a project dependency (`netlify-cli`), but you will install it via `pnpm install`
+
+The site is a [Remix](https://remix.run) application deployed on [Netlify](https://netlify.com). Locally, `netlify dev` acts as the development server — it runs `remix watch` in the background and proxies the Remix server so the Netlify edge function environment is replicated on your machine.
+
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Remix v1 |
+| UI | React 18, styled-components |
+| Language | TypeScript |
+| Hosting | Netlify (edge functions) |
+| Package manager | pnpm |
+
+## Set up the project
+
+<Steps>
+  <Step title="Clone the repository">
+    ```bash
+    git clone https://github.com/wesbos/awesome-uses
+    cd awesome-uses
+    ```
+  </Step>
+
+  <Step title="Install dependencies">
+    <Warning>
+      A `pnpm-lock.yaml` file is committed to the repository. Use `pnpm install` — **not** `npm install` — to avoid overwriting the lockfile or installing mismatched versions.
+    </Warning>
+
+    ```bash
+    pnpm install
+    ```
+
+    This installs all dependencies including `netlify-cli`, which provides the `netlify` binary used in the `dev` and `build` scripts.
+  </Step>
+
+  <Step title="Start the development server">
+    ```bash
+    npm run dev
+    ```
+
+    This runs `NODE_ENV=development netlify dev`, which:
+
+    1. Reads `netlify.toml` to find the dev command (`remix watch`) and port (`3000`)
+    2. Starts the Remix compiler in watch mode
+    3. Proxies requests through the Netlify dev server so edge functions behave as they do in production
+  </Step>
+
+  <Step title="Open the app in your browser">
+    Navigate to [http://localhost:3000](http://localhost:3000).
+
+    The server watches for file changes and rebuilds automatically. You do not need to restart the process after editing source files.
+  </Step>
+</Steps>
+
+## `netlify.toml` dev configuration
+
+The `netlify.toml` file at the project root controls how `netlify dev` behaves:
+
+```toml netlify.toml
+[dev]
+  command = "remix watch"
+  port = 3000
+  autoLaunch = false
+```
+
+`autoLaunch = false` means the CLI will not attempt to open a browser tab automatically. Open [http://localhost:3000](http://localhost:3000) yourself after the server starts.
+
+## `remix.config.js`
+
+The Remix configuration uses the `@netlify/remix-edge-adapter` when running inside a Netlify environment (detected via `process.env.NETLIFY` or `process.env.NETLIFY_LOCAL`):
+
+```js remix.config.js
+const { config } = require("@netlify/remix-edge-adapter");
+
+module.exports = {
+  ...(process.env.NETLIFY || process.env.NETLIFY_LOCAL ? config : {}),
+  appDirectory: "src",
+  future: {
+    unstable_postcss: true,
+  },
+  ignoredRouteFiles: ["**/.*"],
+  server:
+    process.env.NETLIFY || process.env.NETLIFY_LOCAL
+      ? "./server.js"
+      : undefined,
+};
+```
+
+The `appDirectory` is set to `src`, so routes, components, and data files live under `src/` rather than the default `app/` directory.
